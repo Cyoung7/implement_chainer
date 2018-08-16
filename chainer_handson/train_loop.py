@@ -5,12 +5,14 @@ import chainer.functions as F
 from chainer import optimizers
 from chainer.dataset import concat_examples
 from chainer.backends.cuda import to_cpu
-from chainer_handson.model import MLP
+# from chainer.backends.cuda import cupy
+from chainer_handson.model import MLP,LeNet
 from chainer import serializers
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
-train, test = mnist.get_mnist(withlabel=True, ndim=1)
+train, test = mnist.get_mnist(withlabel=True, ndim=3)
+
 # 数据预览
 # x,t = train[0]
 # plt.imshow(x.reshape(28,28),cmap='gray')
@@ -23,7 +25,8 @@ train_iter = iterators.SerialIterator(train, batch_size, repeat=True, shuffle=Tr
 test_iter = iterators.SerialIterator(test, batch_size, repeat=False, shuffle=False)
 
 gpu_id = 0
-model = MLP()
+# model = MLP()
+model = LeNet()
 if gpu_id >= 0:
     model.to_gpu(gpu_id)
 
@@ -34,6 +37,7 @@ max_epoch = 10
 while train_iter.epoch < max_epoch:
     train_batch = train_iter.next()
     image_train, target_train = concat_examples(train_batch, gpu_id)
+    # image_train = cupy.expand_dims(image_train,-1)
     pred_train = model(image_train)
     loss = F.softmax_cross_entropy(pred_train, target_train)
 

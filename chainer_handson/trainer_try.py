@@ -1,19 +1,21 @@
 # -*-coding:utf-8-*-
 import chainer
 from chainer.datasets import mnist
+from chainer.variable import Variable
 from chainer import iterators
 from chainer import optimizers
 from chainer import training
 import chainer.links as L
 from chainer.training import extensions
-from chainer_handson.model import MLP
+from chainer_handson.model import MLP,LeNet
 
-train, test = mnist.get_mnist(withlabel=True, ndim=1)
+train, test = mnist.get_mnist(withlabel=True, ndim=3)
 train_iter = iterators.SerialIterator(train, batch_size=128, repeat=True, shuffle=True)
 test_iter = iterators.SerialIterator(test, batch_size=128, repeat=False, shuffle=False)
 
 gpu_id = 0
-model = MLP()
+# model = MLP()
+model = LeNet()
 
 max_epoch = 10
 model = L.Classifier(model)
@@ -24,7 +26,7 @@ optimizer = optimizers.SGD(lr=0.01)
 optimizer.setup(model)
 updater = training.StandardUpdater(train_iter, optimizer, device=gpu_id)
 
-trainer = training.Trainer(updater, (max_epoch, 'epoch'), out='mnist_result')
+trainer = training.Trainer(updater, (max_epoch, 'epoch'), out='lenet_result')
 trainer.extend(extensions.LogReport())
 trainer.extend(extensions.PrintReport(['epoch', 'main/loss', 'main/accuracy',
                                        'validation/main/loss', 'validation/main/accuracy',

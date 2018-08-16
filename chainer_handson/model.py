@@ -18,4 +18,21 @@ class MLP(chainer.Chain):
         return self.l3(h2)
 
 
+class LeNet(chainer.Chain):
+    def __init__(self, n_out=10):
+        super(LeNet, self).__init__()
+        with self.init_scope():
+            self.conv1 = L.Convolution2D(None, 32, 3, 3, 1)
+            self.conv2 = L.Convolution2D(32, 64, 3, 3, 1)
+            self.conv3 = L.Convolution2D(64, 128, 3, 3, 1)
+            self.l1 = L.Linear(None, 1000)
+            self.l2 = L.Linear(1000, 10)
 
+    def __call__(self, x):
+        h1 = F.relu(self.conv1(x))
+        h2 = F.relu(self.conv2(h1))
+        h3 = F.relu(self.conv3(h2))
+        # Linear 会自动reshape成1维
+        h4 = F.relu(self.l1(h3))
+        h5 = self.l2(h4)
+        return h5

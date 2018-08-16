@@ -21,3 +21,5 @@ sdist/
 ctc/output/log/
 .idea/
 chainer_handson/mnist_result/
+chainer_handson/lenet_result/
+chainer_handson/my_mnist.model
